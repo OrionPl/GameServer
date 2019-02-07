@@ -1,0 +1,27 @@
+id 1: {
+  name = "Iron Ore",
+  burnable = false,
+  burnTime = null,
+  smeltable = true,
+  smeltingResult = 2,
+  mineable = true,
+  miningHardness = 1
+}
+id 2: {
+  name = "Iron",
+  burnable = false,
+  burnTime = null,
+  smeltable = false,
+  smeltingResult = null,
+  mineable = false,
+  miningHardness = null
+}
+id 3: {
+  name = "Gear Wheel",
+  burnable = false,
+  burnTime = null,
+  smeltable = false,
+  smeltingResult = null,
+  mineable = false,
+  miningHardness = null
+}

@@ -1,0 +1,8 @@
+id 1: {
+  result = 3,
+  amountOfRes = 1,
+  ingredients = (2),
+  amountsOfIngredients = (3),
+  buildingType = "Smelter",
+  handCraftable = true
+}

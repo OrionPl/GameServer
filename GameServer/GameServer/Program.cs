@@ -5,10 +5,12 @@ namespace GameServer
     class Program
     {
         static ServerNetworking server = new ServerNetworking();
+        static GameInfo gameInfo = new GameInfo();
 
         static void Main(string[] args)
         {
             PortSelection();
+            gameInfo.LoadGame();
             server.StartServer();
             Console.WriteLine("Server starting...");
 
@@ -27,7 +29,16 @@ namespace GameServer
                         Console.WriteLine(name);
                     }
                 }
-
+                else if (command == "get ore map")
+                {
+                    for (int x = 0; x < 100; x++)
+                    {
+                        for (int y = 0; y < 100; y++)
+                        {
+                            Console.Write(gameInfo.oreMap[x, y] + " ");
+                        }
+                    }
+                }
             }
         }
 
