@@ -5,16 +5,14 @@ using System.Text;
 
 public class SynchronousSocketClient
 {
-    private IPHostEntry ipHostInfo;
-    private IPAddress ipAddress;
-    private IPEndPoint remoteEP;
+    private static IPAddress ipAddress;
+    private static IPEndPoint remoteEP;
     private static Socket socket;
 
     public static void StartClient()
     {
-        IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
-        IPAddress ipAddress = ipHostInfo.AddressList[0];
-        IPEndPoint remoteEP = new IPEndPoint(ipAddress, 8008);
+        ipAddress = IPAddress.Parse("192.168.0.250");
+        remoteEP = new IPEndPoint(ipAddress, 8008);
 
         socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
@@ -26,7 +24,7 @@ public class SynchronousSocketClient
         }
         catch (Exception e)
         {
-            Console.WriteLine("Unexpected exception : {0}", e.Message);
+            Console.WriteLine("Unexpected exception: {0}", e.Message);
         }
     }
 
