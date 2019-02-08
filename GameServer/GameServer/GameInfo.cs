@@ -65,12 +65,12 @@ namespace GameServer
                 }
             }
 
-            groundTexture = TerrainGenerator.GenerateTerrain(1000, 1000);
+            //groundTexture = TerrainGenerator.GenerateTerrain(1000, 1000);
 
             foreach (var ore in ores)
             {
                 Console.WriteLine("Generating ore map for: " + ore.name);
-                oreMap = TerrainGenerator.GenerateOre(1000, 1000, 0.1f, ore.id, 0.1f);
+                oreMap = TerrainGenerator.GenerateOre(100, 100, 0.4f, ore.id, 0.001f);
             }
 
             Console.WriteLine();

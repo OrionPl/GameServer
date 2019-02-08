@@ -36,6 +36,8 @@ namespace GameServer
                         for (int y = 0; y < 100; y++)
                         {
                             Console.Write(gameInfo.oreMap[x, y] + " ");
+                            if ((y + 1) % 100 == 0)
+                                Console.WriteLine();
                         }
                     }
                 }

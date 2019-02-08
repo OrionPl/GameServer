@@ -32,12 +32,12 @@ namespace GameServer
         {
             int[,] noiseMap = new int[xSize, ySize];
             int maxRgb = 255;
+            Random rng = new Random();
 
             for (int x = 0; x < xSize; x++)
             {
                 for (int y = 0; y < ySize; y++)
                 {
-                    Random rng = new Random();
                     if (x == 0)
                     {
                         if (y == 0)
@@ -57,7 +57,7 @@ namespace GameServer
                     else
                     {
                         int multiplier = rng.Next(1, 2) - 1;
-                        noiseMap[x, y] = Convert.ToInt32((noiseMap[x - 1, y] + noiseMap[x, y - 1] + rng.Next()) / 3 * (1 + ((rng.NextDouble() * maxPercentageDifferenceBetweenValues * multiplier) + (rng.NextDouble() * maxPercentageDifferenceBetweenValues * multiplier)/ 2)));
+                        noiseMap[x, y] = Convert.ToInt32((noiseMap[x - 1, y] + noiseMap[x, y - 1] + rng.Next(0, maxValue)) / 3 * (1 + (rng.NextDouble() * maxPercentageDifferenceBetweenValues * multiplier)));
                     }
                     //Console.WriteLine("gen: x=" + x + ", y=" + y + ", with value: " + noiseMap[x, y]);
                 }
