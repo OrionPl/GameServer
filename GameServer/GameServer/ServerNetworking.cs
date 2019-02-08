@@ -28,7 +28,8 @@ public class ServerNetworking
         }
 
         localHostEntry = Dns.GetHostEntry("localhost");
-        localIp = localHostEntry.AddressList[0];
+        localIp = localHostEntry.AddressList[1];
+        Console.WriteLine("Server bound to " + localIp + " with port " + settings.Port);
         localEndPoint = new IPEndPoint(localIp, settings.Port);
         listenSocket = new Socket(localIp.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
