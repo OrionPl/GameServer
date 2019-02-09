@@ -11,9 +11,8 @@ public class ServerNetworking
     public Client[] clients;
 
     public ServerSettings settings;
-
-    private IPHostEntry localHostEntry;
-    private IPAddress localIp;
+    
+    private IPAddress acceptIp;
     private IPEndPoint localEndPoint;
     private Socket listenSocket;
 
@@ -26,12 +25,11 @@ public class ServerNetworking
         {
             clients[i] = new Client();
         }
-
-        localHostEntry = Dns.GetHostEntry("localhost");
-        localIp = localHostEntry.AddressList[1];
-        Console.WriteLine("Server bound to " + localIp + " with port " + settings.Port);
-        localEndPoint = new IPEndPoint(localIp, settings.Port);
-        listenSocket = new Socket(localIp.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+        
+        acceptIp = IPAddress.Any;
+        Console.WriteLine("Server bound to " + acceptIp + " with port " + settings.Port);
+        localEndPoint = new IPEndPoint(acceptIp, settings.Port);
+        listenSocket = new Socket(acceptIp.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
         try
         {
@@ -112,7 +110,6 @@ public class Client
 
     private void OnReceive(IAsyncResult ar)
     {
-        Console.WriteLine("receiving");
         Socket socket = (Socket) ar.AsyncState;
 
         try
@@ -140,7 +137,20 @@ public class Client
 
     public void CloseClient(int Index)
     {
-        Console.WriteLine(ip + " has disconnected from the server");
+        if (socket != null)
+        {
+            Console.WriteLine(ip + " has disconnected from the server");
+            player = null;
+            isClosed = true;
+            socket.Close();
+            socket = null;
+        }
+    }
+
+    public void CloseClient(int Index, string reason)
+    {
+        Console.WriteLine(ip + " has disconnected from the server. Reason: " + reason);
+        player = null;
         isClosed = true;
         socket.Close();
         socket = null;
@@ -148,6 +158,11 @@ public class Client
 
     private void HandleQuery(string query)
     {
+        if (player == null && !query.StartsWith("userInfo"))
+        {
+            CloseClient(index, "no user info");
+        }
+
         if (query.StartsWith("userInfo"))
         {
             bool startAdding = false;
@@ -169,6 +184,7 @@ public class Client
                 }
             }
 
+            Console.WriteLine("Client with ip " + ip + " assigned username " + username);
             player = new Player(username);
         }
         else if (query.StartsWith("say"))

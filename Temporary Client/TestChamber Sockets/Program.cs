@@ -8,10 +8,10 @@ public class SynchronousSocketClient
     private static IPAddress ipAddress;
     private static IPEndPoint remoteEP;
     private static Socket socket;
+    private static string username;
 
     public static void StartClient()
     {
-        ipAddress = IPAddress.Parse("192.168.0.250");
         remoteEP = new IPEndPoint(ipAddress, 8008);
 
         socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -32,6 +32,20 @@ public class SynchronousSocketClient
     {
         while (true)
         {
+            try
+            {
+                Console.WriteLine("What server do you want to connect to?");
+                ipAddress = IPAddress.Parse(Console.ReadLine());
+                break;
+            }
+            catch (Exception) { Console.WriteLine("Wrong ip address"); }
+        }
+
+        Console.WriteLine("Write your username");
+        username = Console.ReadLine();
+
+        while (true)
+        {
             string r = Console.ReadLine();
 
             if (r.StartsWith("send"))
@@ -45,6 +59,7 @@ public class SynchronousSocketClient
             else if (r.Contains("start"))
             {
                 StartClient();
+                SendMessage("userInfo " + username);
             }
             else if (r.StartsWith("getUnreadChat"))
             {
