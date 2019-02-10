@@ -63,7 +63,7 @@ public class SynchronousSocketClient
             }
             else if (r.StartsWith("getUnreadChat"))
             {
-                SendMessage(r.Remove(0, 14));
+                SendMessage(r);
                 Console.WriteLine(ReceiveMessage());
             }
         }
