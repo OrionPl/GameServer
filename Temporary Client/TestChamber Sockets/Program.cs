@@ -66,6 +66,11 @@ public class SynchronousSocketClient
                 SendMessage(r);
                 Console.WriteLine(ReceiveMessage());
             }
+            else if (r.StartsWith("getConnected"))
+            {
+                SendMessage(r);
+                Console.WriteLine(ReceiveMessage());
+            }
         }
     }
 

@@ -204,6 +204,15 @@ public class Client
             }
             AnwserToQuery(unreadChatToSend);
         }
+        else if (query.StartsWith("getConnected"))
+        {
+            string msg = "";
+            foreach (var client in GetConnectedClients())
+            {
+                msg += client.player.username + "<eou>";
+            }
+            AnwserToQuery(msg);
+        }
         else
         {
             Console.WriteLine("Unintelligible query from " + ip + ": " + query);
