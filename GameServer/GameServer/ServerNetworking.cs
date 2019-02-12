@@ -130,7 +130,7 @@ public class Client
         }
         catch (Exception)
         {
-            //Console.WriteLine("Error while receiving data from " + ip);
+            Console.WriteLine("Error while receiving data from " + ip);
             CloseClient(index);
         }
     }
@@ -212,6 +212,41 @@ public class Client
                 msg += client.player.username + "<eou>";
             }
             AnwserToQuery(msg);
+        }
+        else if (query.StartsWith("position="))
+        {
+            string temp = query.Remove(0, 9);
+            bool next = false;
+            float x = 0;
+            float y = 0;
+
+            for (int i = 0; i < temp.Length - 1; i++)
+            {
+                if (temp[i] >= 48 && temp[i] <= 57)
+                {
+                    if (!next)
+                    {
+                        x *= 10;
+                        x += temp[i] - 48;
+                    }
+                    else
+                    {
+                        y *= 10;
+                        y += temp[i] - 48;
+                    }
+                }
+                else if (temp[i] == 59)
+                {
+                    next = true;
+                }
+            }
+
+            player.WritePosition(x, y);
+            Console.WriteLine("Player moved to x=" + x + ", y=" + y);
+        }
+        else if (query == "getPositions")
+        {
+
         }
         else
         {
