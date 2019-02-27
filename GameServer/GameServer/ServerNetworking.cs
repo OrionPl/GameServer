@@ -112,7 +112,7 @@ public class Client
     {
         Socket socket = (Socket) ar.AsyncState;
 
-        //try
+        try
         {
             int rec = socket.EndReceive(ar);
 
@@ -128,11 +128,11 @@ public class Client
                 socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(OnReceive), socket);
             }
         }
-        //catch (Exception e)
-        //{
-        //    Console.WriteLine("Error while receiving data from " + ip + ": " + e.Message);
-        //    CloseClient(index);
-        //}
+        catch (Exception e)
+        {
+            Console.WriteLine("Error while receiving data from " + ip + ": " + e.Message);
+            CloseClient(index);
+        }
     }
 
     public void CloseClient(int Index)
