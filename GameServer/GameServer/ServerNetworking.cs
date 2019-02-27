@@ -112,7 +112,7 @@ public class Client
     {
         Socket socket = (Socket) ar.AsyncState;
 
-        try
+        //try
         {
             int rec = socket.EndReceive(ar);
 
@@ -128,18 +128,18 @@ public class Client
                 socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(OnReceive), socket);
             }
         }
-        catch (Exception)
-        {
-            Console.WriteLine("Error while receiving data from " + ip);
-            CloseClient(index);
-        }
+        //catch (Exception e)
+        //{
+        //    Console.WriteLine("Error while receiving data from " + ip + ": " + e.Message);
+        //    CloseClient(index);
+        //}
     }
 
     public void CloseClient(int Index)
     {
         if (socket != null)
         {
-            Console.WriteLine(ip + " has disconnected from the server");
+            Console.WriteLine(player.username + " has disconnected from the server");
             player = null;
             isClosed = true;
             socket.Close();
@@ -149,7 +149,7 @@ public class Client
 
     public void CloseClient(int Index, string reason)
     {
-        Console.WriteLine(ip + " has disconnected from the server. Reason: " + reason);
+        Console.WriteLine(player.username + " has disconnected from the server. Reason: " + reason);
         player = null;
         isClosed = true;
         socket.Close();
@@ -213,7 +213,10 @@ public class Client
             {
                 foreach (var cc in clients)
                 {
-                    msg += cc.player.username + "<eou>";
+                    if (cc.player != null)
+                    {
+                        msg += cc.player.username + "<eou>";
+                    }
                 }
 
                 AnwserToQuery(msg);
@@ -272,13 +275,13 @@ public class Client
                 {
                     anwser += '"' + cc.player.username + '"' + " " + cc.player.position[0] + "; " + cc.player.position[1] + "<eou>";
                 }
+
+                AnwserToQuery(anwser + " ");
             }
             else
             {
                 AnwserToQuery("noPos");
             }
-
-            AnwserToQuery(anwser + " ");
         }
         else
         {
@@ -305,16 +308,23 @@ public class Client
 
         foreach (var c in clients)
         {
-            if (!c.isClosed && c.player.username != player.username)
+            if (!c.isClosed && c.player != null)
             {
-                tempClients.Add(c);
-                i++;
+                if (c.player.username != player.username)
+                {
+                    tempClients.Add(c);
+                    i++;
+                }
             }
         }
 
         if (i > 0)
+        {
             return tempClients.ToArray();
+        }
         else
+        {
             return null;
+        }
     }
 }
