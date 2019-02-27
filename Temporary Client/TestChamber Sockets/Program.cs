@@ -71,6 +71,11 @@ public class SynchronousSocketClient
                 SendMessage(r);
                 Console.WriteLine(ReceiveMessage());
             }
+            else if (r == "getPositions")
+            {
+                SendMessage(r);
+                Console.WriteLine(ReceiveMessage());
+            }
         }
     }
 

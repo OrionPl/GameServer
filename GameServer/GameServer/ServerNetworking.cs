@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
+using System.Globalization;
 using GameServer;
 
 public class ServerNetworking
@@ -206,47 +206,79 @@ public class Client
         }
         else if (query.StartsWith("getConnected"))
         {
-            string msg = "";
-            foreach (var client in GetConnectedClients())
+            string msg = "awsUsers=";
+            Client[] ccs = GetConnectedClients();
+
+            if (ccs != null)
             {
-                msg += client.player.username + "<eou>";
+                foreach (var cc in clients)
+                {
+                    msg += cc.player.username + "<eou>";
+                }
+
+                AnwserToQuery(msg);
             }
-            AnwserToQuery(msg);
+            else
+            {
+                AnwserToQuery("noUsers");
+            }
         }
         else if (query.StartsWith("position="))
         {
             string temp = query.Remove(0, 9);
-            bool next = false;
-            float x = 0;
-            float y = 0;
+            string x = "";
+            string y = "";
 
-            for (int i = 0; i < temp.Length - 1; i++)
+            //X
+            foreach (var a in temp)
             {
-                if (temp[i] >= 48 && temp[i] <= 57)
+                if (a != ';')
                 {
-                    if (!next)
-                    {
-                        x *= 10;
-                        x += temp[i] - 48;
-                    }
-                    else
-                    {
-                        y *= 10;
-                        y += temp[i] - 48;
-                    }
+                    x += a;
                 }
-                else if (temp[i] == 59)
+                else
                 {
-                    next = true;
+                    break;
                 }
             }
 
-            player.WritePosition(x, y);
-            Console.WriteLine("Player moved to x=" + x + ", y=" + y);
+            temp = temp.Remove(0, x.Length + 2);
+            //Y
+            foreach (var b in temp)
+            {
+                if (b != ';')
+                {
+                    y += b;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            var culture = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+            culture.NumberFormat.NumberDecimalSeparator = ",";
+            player.WritePosition(float.Parse(x), float.Parse(y));
+            //Console.WriteLine(player.username + " moved to x=" + x + ", y=" + y);
         }
         else if (query == "getPositions")
         {
+            string anwser = "awsPos=";
+            Client[] ccs = GetConnectedClients();
 
+            if (ccs != null)
+            {
+                foreach (var cc in ccs)
+                {
+                    anwser += '"' + cc.player.username + '"' + " " + cc.player.position[0] + "; " + cc.player.position[1] + "<eou>";
+                }
+            }
+            else
+            {
+                AnwserToQuery("noPos");
+            }
+
+            AnwserToQuery(anwser + " ");
         }
         else
         {
@@ -256,7 +288,9 @@ public class Client
 
     private void AnwserToQuery(string anwser)
     {
-        socket.Send(buffer, 0, Encoding.ASCII.GetByteCount(anwser), SocketFlags.None);
+        int size = Encoding.ASCII.GetByteCount(anwser);
+        
+        socket.Send(Encoding.ASCII.GetBytes(anwser), 0, size, SocketFlags.None);
     }
 
     public void UpdateClients(Client[] updatedClients)
@@ -267,15 +301,20 @@ public class Client
     private Client[] GetConnectedClients()
     {
         List<Client> tempClients = new List<Client>();
+        int i = 0;
 
         foreach (var c in clients)
         {
-            if (!c.isClosed)
+            if (!c.isClosed && c.player.username != player.username)
             {
                 tempClients.Add(c);
+                i++;
             }
         }
 
-        return tempClients.ToArray();
+        if (i > 0)
+            return tempClients.ToArray();
+        else
+            return null;
     }
 }
