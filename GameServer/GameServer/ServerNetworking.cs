@@ -197,7 +197,7 @@ public class Client
         }
         else if (query.StartsWith("getUnreadChat"))
         {
-            string unreadChatToSend = "chat: ";
+            string unreadChatToSend = "chat= ";
             foreach (var msg in player.ReadChat())
             {
                 unreadChatToSend += msg + "<eom>";
